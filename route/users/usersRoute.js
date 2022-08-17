@@ -6,12 +6,13 @@ const {
   deleteUserCtrl,
   fetchDetailUserCtrl,
 } = require("../../controllers/users/userCtrl");
+const authMiddleware = require("../../middlewares/auth/authMiddleware");
 
 const userRouters = express.Router();
 
 userRouters.post("/register", userRegisterCtrl);
 userRouters.post("/login", userLoginCtrl);
-userRouters.get("/", fetchUserCtrl);
-userRouters.get("/:id", fetchDetailUserCtrl);
-userRouters.delete("/:id", deleteUserCtrl);
+userRouters.get("/", authMiddleware, fetchUserCtrl);
+userRouters.get("/:id", authMiddleware, fetchDetailUserCtrl);
+userRouters.delete("/:id", authMiddleware, deleteUserCtrl);
 module.exports = userRouters;
