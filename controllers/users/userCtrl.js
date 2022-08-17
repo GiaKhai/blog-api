@@ -56,6 +56,17 @@ const fetchUserCtrl = expressAsynsHandler(async (req, res) => {
   }
 });
 
+//fetch detail user
+const fetchDetailUserCtrl = expressAsynsHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const users = await User.findById(id);
+    res.json(users);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 //delete user
 const deleteUserCtrl = expressAsynsHandler(async (req, res) => {
   const { id } = req.params;
@@ -73,4 +84,5 @@ module.exports = {
   userLoginCtrl,
   fetchUserCtrl,
   deleteUserCtrl,
+  fetchDetailUserCtrl,
 };

@@ -4,6 +4,7 @@ const {
   userLoginCtrl,
   fetchUserCtrl,
   deleteUserCtrl,
+  fetchDetailUserCtrl,
 } = require("../../controllers/users/userCtrl");
 
 const userRouters = express.Router();
@@ -11,6 +12,6 @@ const userRouters = express.Router();
 userRouters.post("/register", userRegisterCtrl);
 userRouters.post("/login", userLoginCtrl);
 userRouters.get("/", fetchUserCtrl);
-userRouters.delete("/:userId", deleteUserCtrl);
-
+userRouters.get("/:id", fetchDetailUserCtrl);
+userRouters.delete("/:id", deleteUserCtrl);
 module.exports = userRouters;
