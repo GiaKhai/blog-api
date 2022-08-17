@@ -1,6 +1,8 @@
 const User = require("../../model/user/User");
 const expressAsynsHandler = require("express-async-handler");
 const generateToken = require("../../config/token/generateToken");
+const { reset } = require("nodemon");
+const validateMongodbId = require("../utils/validateMongodbID");
 
 //register
 const userRegisterCtrl = expressAsynsHandler(async (req, res) => {
@@ -26,7 +28,6 @@ const userRegisterCtrl = expressAsynsHandler(async (req, res) => {
 });
 
 //login
-
 const userLoginCtrl = expressAsynsHandler(async (req, res) => {
   const { email, password } = req.body;
   const userFound = await User.findOne({ email });
@@ -45,4 +46,31 @@ const userLoginCtrl = expressAsynsHandler(async (req, res) => {
   }
 });
 
-module.exports = { userRegisterCtrl, userLoginCtrl };
+//fetch all user
+const fetchUserCtrl = expressAsynsHandler(async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.json(users);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+//delete user
+const deleteUserCtrl = expressAsynsHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongodbId(id);
+  try {
+    const deleteUser = await User.findByIdAndDelete(id);
+    res.json(deleteUser);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+module.exports = {
+  userRegisterCtrl,
+  userLoginCtrl,
+  fetchUserCtrl,
+  deleteUserCtrl,
+};
