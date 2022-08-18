@@ -60,9 +60,47 @@ const fetchUserCtrl = expressAsynsHandler(async (req, res) => {
 //fetch detail user
 const fetchDetailUserCtrl = expressAsynsHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbId(id);
   try {
     const users = await User.findById(id);
     res.json(users);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+//profile user
+const profileUserCtrl = expressAsynsHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongodbId(id);
+  try {
+    const profile = await User.findById(id);
+    res.json(profile);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+//update profile user
+const updateProfileUserCtrl = expressAsynsHandler(async (req, res) => {
+  const { id } = req.params;
+  const { firstName, lastName, email, bio } = req.body;
+  validateMongodbId(id);
+  try {
+    const profile = await User.findByIdAndUpdate(
+      id,
+      {
+        firstName,
+        lastName,
+        email,
+        bio,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.json(profile);
   } catch (error) {
     res.json(error);
   }
@@ -86,4 +124,6 @@ module.exports = {
   fetchUserCtrl,
   deleteUserCtrl,
   fetchDetailUserCtrl,
+  profileUserCtrl,
+  updateProfileUserCtrl,
 };

@@ -8,14 +8,14 @@ const authMiddleware = expressAsynsHandler(async (req, res, next) => {
   const decoded = jwt.verify(token, process.env.JWT_KEY);
   try {
     if (token) {
-      const user = await User.findById(decoded?.id);
+      const user = await User.findById(decoded?.id).select("-password");
       req.user = user;
       next();
     } else {
-      throw new Error("Header k có token");
+      throw new Error("There is no token attached to the header");
     }
   } catch (error) {
-    throw new Error("No auth");
+    throw new Error("No authorized token axpired");
   }
 });
 
