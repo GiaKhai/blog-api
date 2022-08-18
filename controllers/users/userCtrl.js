@@ -1,8 +1,10 @@
 const User = require("../../model/user/User");
 const expressAsynsHandler = require("express-async-handler");
 const generateToken = require("../../config/token/generateToken");
-const { reset } = require("nodemon");
+const sgMail = require("@sendgrid/mail");
 const validateMongodbId = require("../utils/validateMongodbID");
+
+sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 
 //register
 const userRegisterCtrl = expressAsynsHandler(async (req, res) => {
@@ -118,6 +120,39 @@ const deleteUserCtrl = expressAsynsHandler(async (req, res) => {
   }
 });
 
+//update password
+
+const updateUserPasswordCtrl = expressAsynsHandler(async (req, res) => {
+  const { id } = req.user;
+  const { password } = req.body;
+  validateMongodbId(id);
+  const user = await User.findById(id);
+  if (password) {
+    user.password = password;
+    const updateUser = await user.save();
+    res.json(updateUser);
+  }
+  res.json(user);
+});
+
+//send mail
+const generateVerificationTokenCtrl = expressAsynsHandler(async (req, res) => {
+  try {
+    const msg = {
+      to: "khaigia11111@gmail.com", // Change to your recipient
+      from: "nguyendinhgiakhai@gmail.com", // Change to your verified sender
+      subject: "Sending with SendGrid is Fun",
+      text: "and easy to do anywhere, even with Node.js",
+      html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+    };
+    await sgMail.send(msg);
+    res.json("Email send");
+    console.log("123");
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
@@ -126,4 +161,6 @@ module.exports = {
   fetchDetailUserCtrl,
   profileUserCtrl,
   updateProfileUserCtrl,
+  updateUserPasswordCtrl,
+  generateVerificationTokenCtrl,
 };

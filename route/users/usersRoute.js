@@ -7,6 +7,8 @@ const {
   fetchDetailUserCtrl,
   profileUserCtrl,
   updateProfileUserCtrl,
+  updateUserPasswordCtrl,
+  generateVerificationTokenCtrl,
 } = require("../../controllers/users/userCtrl");
 const authMiddleware = require("../../middlewares/auth/authMiddleware");
 
@@ -18,5 +20,7 @@ userRouters.get("/", authMiddleware, fetchUserCtrl);
 userRouters.get("/:id", authMiddleware, fetchDetailUserCtrl);
 userRouters.get("/profile/:id", authMiddleware, profileUserCtrl);
 userRouters.put("/:id", authMiddleware, updateProfileUserCtrl);
+userRouters.post("/send-mail", generateVerificationTokenCtrl);
+userRouters.put("/password/:id", authMiddleware, updateUserPasswordCtrl);
 userRouters.delete("/:id", authMiddleware, deleteUserCtrl);
 module.exports = userRouters;
